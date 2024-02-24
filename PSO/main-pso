@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Mar 10 18:21:46 2023
+
+@author: daniyal
+"""
+
+import cv2
+import numpy as np
+import math
+import random
+
+# Load the image
+img = cv2.imread('/home/daniyal/image-processing/img/balloons.png', cv2.IMREAD_GRAYSCALE)
+
+# Define the PSO parameters
+max_iter = 20      # Maximum number of iterations
+pop_size = 10      # Population size
+c1 = 1.0           # PSO parameter
+c2 = 1.0           # PSO parameter
+w = 0.8            # PSO parameter
+lb = 0.0           # Lower bound of enhancement factor
+ub = 2.0           # Upper bound of enhancement factor
+
+# Define the fitness function
+def fitness_func(f, img):
+    x = img*f
+    enhanced_img = np.clip(x, 0, 255).astype(np.uint8)
+    fitness = -cv2.Laplacian(enhanced_img, cv2.CV_64F).var()
+    return fitness
+
+# Initialize the particles
+particles = np.zeros((pop_size, 2))
+particles[:, 0] = np.random.uniform(lb, ub, pop_size)
+particles[:, 1] = np.random.uniform(lb, ub, pop_size)
+velocities = np.zeros((pop_size, 2))
+pbest = particles.copy()
+gbest = particles[np.argmax([fitness_func(f, img) for f in particles]), :]
+
+# PSO algorithm
+for i in range(max_iter):
+    for j in range(pop_size):
+        r1 = random.random()
+        r2 = random.random()
+        velocities[j, 0] = w * velocities[j, 0] + c1 * r1 * (pbest[j, 0] - particles[j, 0]) + c2 * r2 * (gbest[0] - particles[j, 0])
+        velocities[j, 1] = w * velocities[j, 1] + c1 * r1 * (pbest[j, 1] - particles[j, 1]) + c2 * r2 * (gbest[1] - particles[j, 1])
+        particles[j, 0] = np.clip(particles[j, 0] + velocities[j, 0], lb, ub)
+        particles[j, 1] = np.clip(particles[j, 1] + velocities[j, 1], lb, ub)
+        if fitness_func(particles[j, 0], img) > fitness_func(pbest[j, 0], img):
+            pbest[j, :] = particles[j, :]
+        if fitness_func(particles[j, 0], img) > fitness_func(gbest[0], img):
+            gbest = particles[j, :]
+    print('Iteration', i+1, '- Best Fitness:', -fitness_func(gbest[0], img))
+    
+# Apply the enhancement factor to the image
+enhanced_img = np.clip(gbest[0] * img, 0, 255).astype(np.uint8)
+
+# Save the enhanced image
+cv2.imwrite('enhanced_image.jpg', enhanced_img)

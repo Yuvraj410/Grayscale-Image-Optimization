@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 16 13:37:17 2023
+
+@author: daniyal
+"""
+
+import numpy as np
+from skimage.util.shape import view_as_windows
+import cv2
+
+# Read image
+image = cv2.imread('img/lena_condec.jpg', cv2.IMREAD_GRAYSCALE)
+
+img = np.pad(image, ((1, 1), (1, 1)), mode='constant')
+
+# Set window size
+win_size = (3, 3)  # (height, width)
+
+# Extract patches using sliding window
+patches = view_as_windows(img, win_size)
+
+# Calculate local arithmetic mean of each patch
+arithmetic_mean = np.mean(patches, axis=(2, 3))
+
+# Calculate local geometric mean of each patch
+nonzero_patches = patches.copy()
+nonzero_patches[nonzero_patches == 0] = 1  # Avoid taking the logarithm of zero
+geometric_mean = np.exp(np.mean(np.log(nonzero_patches), axis=(2, 3)))
+
+# Show results
+print('Local Arithmetic Mean:\n', arithmetic_mean)
+print('Local Geometric Mean:\n', geometric_mean)
