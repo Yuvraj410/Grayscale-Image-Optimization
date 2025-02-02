@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Dec  5 20:24:50 2022
 
-@author: daniyal
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
