@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 27 16:28:38 2023
 
-@author: daniyal
-"""
 
 import cv2 as cv
 import pygad
