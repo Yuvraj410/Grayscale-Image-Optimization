@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Mar 16 23:56:32 2023
 
-@author: daniyal
-"""
 import cv2 as cv
 import pygad
 import numpy as np
