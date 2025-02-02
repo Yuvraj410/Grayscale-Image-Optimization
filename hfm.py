@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Nov 17 19:35:31 2022
-
-@author: daniyal
-"""
 
 
 import cv2 as cv
